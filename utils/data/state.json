@@ -1,0 +1,47 @@
+[
+  {
+    "name": "greetings",
+    "responses": ["Hello", "Hey"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "goodbye",
+    "responses": [
+      "It was a pleasure to assist you. Do have a great day.",
+      "Later"
+    ],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "additional_memory",
+    "responses": ["Would you like to add anything else to your memory?"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "save_memory",
+    "responses": ["Your memory was saved"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "cancel_memory",
+    "responses": ["Are you sure you want to cancel it?"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "confirm_cancel_memory",
+    "responses": ["your memory wasn't saved"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  }
+]
