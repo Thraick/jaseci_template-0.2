@@ -4,6 +4,7 @@ actions load module jaseci_ai_kit.tfm_ner
 actions load module jaseci_ai_kit.use_enc
 actions load module jaseci_ai_kit.t5_sum
 actions load module jaseci_ai_kit.zs_classifier
+actions load module jaseci_ai_kit.cl_summer
 
 actions load local utils/model/local/flow.py
 actions load local utils/model/local/twilio_bot.py
@@ -19,6 +20,7 @@ walker run init
 
 
 walker run talk -ctx "{\"question\": \"yesterday was Anna's birthday.\"}"
+walker run talk -ctx "{\"question\": \"yesterday was Anna's birthday. we went on a vacation\"}"
 // walker run talk -ctx "{\"question\": \"we celebrated her birthday at home.\"}"
 walker run talk -ctx "{\"question\": \"This was taken at home in Ann Arbor\"}"
 walker run talk -ctx "{\"question\": \"it was amazing\"}"
@@ -29,6 +31,24 @@ walker run talk -ctx "{\"question\": \"it was mostly sunny there\"}"
 
 
 walker run talk -ctx "{\"question\": \"This was taken at home in Ann Arbor. we had an amazing time\"}"
+
+
+walker run talk -ctx "{\"question\": \" yes, save it\"}"
+walker run talk -ctx "{\"question\": \"Let's not save it\"}"
+walker run talk -ctx "{\"question\": \"yes Absolutely\"}"
+walker run talk -ctx "{\"question\": \"no\"}"
+
+
+
+walker run talk -ctx "{\"question\": \"yesterday was Anna's birthday.\"}"
+walker run talk -ctx "{\"question\": \"john and tim was there and they were anna's oldest friends\"}"
+walker run talk -ctx "{\"question\": \"no\"}"
+walker run talk -ctx "{\"question\": \"It was really amazing\"}"
+walker run talk -ctx "{\"question\": \"We ate cake and play cricket\"}"
+
+
+
+
 
 // walker run talk -ctx "{\"question\": \"hello, how are you\"}"
 // walker run talk -ctx "{\"question\": \"later\"}"

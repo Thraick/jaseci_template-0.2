@@ -76,7 +76,7 @@
     "I'm not up for it",
     "I'm out"
   ],
-  "save_memory": [
+  "confirm_save_memory": [
     "Yes, save it",
     "Definitely, save it",
     "Sure, save it",
@@ -96,7 +96,29 @@
     "I'm down, save it",
     "I'm game, save it",
     "I'm on board, save it",
-    "I'm all for it, save it"
+    "I'm all for it, save it",
+    "yes",
+    "Please it",
+    "yes please do",
+    "Absolutely",
+    "Certainly",
+    "Definitely",
+    "Of course",
+    "Without a doubt",
+    "Agreed",
+    "You got it",
+    "I'm in",
+    "Sure thing",
+    "Right on",
+    "Sounds good",
+    "I concur",
+    "I approve",
+    "I endorse",
+    "I support",
+    "I'm down",
+    "I'm game",
+    "I'm on board",
+    "I'm all for it"
   ],
   "cancel_memory": [
     "Please don't save it",

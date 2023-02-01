@@ -1,8 +1,8 @@
 {
-    "birthday": ["emotion", "people", "date", "location", "age", "subject"],
-    "anniversary": ["emotion", "people", "date", "location", "number"],
+    "birthday": ["emotion", "event", "people", "date", "age", "subject"],
+    "anniversary": ["emotion", "event", "people", "date", "location", "number"],
     "vacation": ["emotion", "people", "date", "location", "weather"],
-    "funeral": ["emotion", "people", "date", "location"],
-    "sport": ["emotion", "people", "date", "location", "outcome"],
-    "accident": ["emotion", "people", "date", "location"]
+    "funeral": ["emotion", "event", "people", "date", "location"],
+    "sport": ["emotion", "event", "people", "date", "location", "outcome"],
+    "accident": ["emotion", "event", "people", "date", "location"]
 }

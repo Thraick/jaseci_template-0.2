@@ -11,6 +11,10 @@ edge redirect_transition {
     has name;
 }
 
+edge redirect_confirm_transition {
+    has name;
+}
+
 edge entity_transition {
     has entities;
 }

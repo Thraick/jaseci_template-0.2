@@ -39,3 +39,13 @@ global sentiments = {
     "anger": ["I'm sorry that you're mad, it'll be ok..'", "Try to stay calm, ok?", "I'm sorry that you are angry!"],
     "surprised": ["Wow, that's surprising!", "Amazing!, I know you are surprised indeed!"]
 };
+
+
+// {
+//     "birthday": ["emotion", "people", "date", "location", "age", "subject"],
+//     "anniversary": ["emotion", "people", "date", "location", "number"],
+//     "vacation": ["emotion", "people", "date", "location", "weather"],
+//     "funeral": ["emotion", "people", "date", "location"],
+//     "sport": ["emotion", "people", "date", "location", "outcome"],
+//     "accident": ["emotion", "people", "date", "location"]
+// }

@@ -4,6 +4,9 @@ node response_only_template:dialogue_state{
 
     can nlu with talk entry {
         ::classify_intent;
+        ::extract_entities;
+        ::business_logic;
+
         state_json = file.load_json(global.train_state_path);
         for state in state_json{
             if (!visitor.respond) {
@@ -193,49 +196,49 @@ node dialogue_state{
 
             required_entities = -[entity_transition]->.edge.entities;
             redirect = -[redirect_transition]->;
-            std.out("redirect 1");
-            std.out(redirect);
-            std.out("visitor.respond");
-            std.out(visitor.respond);
+            // std.out("redirect 1");
+            // std.out(redirect);
+            // std.out("visitor.respond");
+            // std.out(visitor.respond);
 
             if(visitor.extracted_entities and !visitor.next_state){
                 if(required_entities){
                     for entity in required_entities{
                         required = flow.check_required_entity(entity, visitor.extracted_entities.d::keys);
                         if(required == true){
-                            std.out("entity ext if");
+                            // std.out("entity ext if");
                             // visitor.respond = true;
                             visitor.next_state = -[entity_transition(entities == entity)]->[0];
                         }
                         elif(visitor.predicted_intent){
-                            std.out("entity predict else");
+                            // std.out("entity predict else");
                             visitor.next_state = -[intent_transition(intent == visitor.predicted_intent)]->[0];
                         }
                         elif(redirect){
-                            std.out("entity ext else");
+                            // std.out("entity redirect else");
                             // visitor.respond = true;
                             visitor.next_state = -[redirect_transition]->[0];
                         }
                         else{
-                            std.out('NOTE: Can Process else ran 2!');
+                            // std.out('NOTE: Can Process else ran 2!');
                         }
                     }
                 }
                 elif(visitor.predicted_intent){
-                    std.out("no entity predict else");
+                    // std.out("no entity predict else");
                     visitor.next_state = -[intent_transition(intent == visitor.predicted_intent)]->[0];
                 }
                 elif(redirect){
-                    std.out("no entity ext else");
+                    // std.out("no entity ext else");
                     // visitor.respond = true;
                     visitor.next_state = -[redirect_transition]->[0];
                 }
                 else{
-                    std.out('NOTE: Can Process else ran 3!');
+                    // std.out('NOTE: Can Process else ran 3!');
                 }
             }
             elif(visitor.predicted_intent and visitor.threshold ){
-                std.out("predict");
+                // std.out("predict");
             // elif(visitor.predicted_intent and visitor.threshold and !visitor.next_state){
                 // std.out(intent[0]['name']);
                 // visitor.next_state = -[intent_transition(intent[0]['name'] == visitor.predicted_intent)]->[0];
@@ -244,12 +247,12 @@ node dialogue_state{
             }
             elif(redirect and !visitor.next_state){
             // elif(redirect){
-                std.out("redirect");
+                // std.out("redirect");
                 // visitor.respond = true;
                 visitor.next_state = -[redirect_transition]->[0];
             }
             else{
-                std.out('NOTE: Can Process else ran 1!');
+                // std.out('NOTE: Can Process else ran 1!');
             //     visitor.next_state = null;
             }
         }
@@ -568,6 +571,72 @@ node event:dialogue_state{
 }
 
 
+node summary_template:dialogue_state{
+    has name;
+
+    can local.paraphraser;
+    can flow.fix_sentence;
+    can cl_summer.summarize;
+
+
+
+    can summarize{ 
+        sentence = ' '.str::join(visitor.dialogue_context["extracted_sentences"]);
+        std.out("sentence");
+        std.out(sentence);
+        // tt = cl_summer.summarize(
+        //     text = sentence,
+        //     url = "none",
+        //     sent_count = 5,
+        //     summarizer_type = "LsaSummarizer"
+        // );
+
+        // tt = t5_sum.classify_text(
+        //     text = sentence,
+        //     min_length = 30,
+        //     max_length = 500
+        // );
+        // std.out(tt);
+        // new_response = flow.fix_sentence(tt[0]);
+
+        tt2 = local.paraphraser(sentence);
+        new_response2 = flow.fix_sentence(tt2[0]);
+
+        // std.out("new_response 1");
+        // std.out(new_response);
+        // std.out("new_response 2");
+        // std.out(new_response2);
+        // visitor.dialogue_context["summary"] = new_response;
+        visitor.dialogue_context["summary"] = new_response2;
+    }
+
+    can nlu with talk entry {
+        ::classify_intent;
+        ::extract_entities;
+        ::business_logic;
+        ::summarize;
+            // std.out("\nSummary");
+        
+
+        state_json = file.load_json(global.train_state_path);
+        for state in state_json{
+            if (!visitor.respond) {
+                if (here.name == state["name"].str){
+                    arry = flow.select_response({}, state['responses'], {});
+                    // arry = flow.select_response(null, state['responses'], null);
+                    // std.out(arry);
+                    visitor.response = arry['response'];
+                    std.out(visitor.dialogue_context['summary']);
+                    // visitor.response = arry[1];
+                }
+            }
+        }
+    }
+
+    // can process with talk entry{
+    //     visitor.next_state = -[intent_transition(intent==global.dialogue_root)]->;
+    // }
+}
 
 
 node events:dialogue_state{
@@ -575,74 +644,141 @@ node events:dialogue_state{
     has answer_list = [];
     has que = {};
     has ent_list = [];
+    has required_que = [];
     has response_entity = file.load_json("que.json");
+    has event_type = file.load_json("utils/data/summary/events.json");
     has extracted_sentences = [];
+    has removed_que = [];
+    has first_response = true;
+    has unanswer_que = [];
 
-    can t5_sum.classify_text;
+    // can t5_sum.classify_text;
 
 
     // can use.qa_classify;
 
 
-    can summarize{
-        if(visitor.extracted_entities and !visitor.predicted_intent){
-            here.extracted_sentences.list::append(visitor.question);
-            // std.out("store sentence");
-        }
-
-        sentence = ' '.str::join(here.extracted_sentences);
-        tt = t5_sum.classify_text(
-            text = sentence,
-            min_length = 30,
-            max_length = 500
-        );
-        new_response = flow.fix_sentence(tt);
-        visitor.dialogue_context["summary"] = new_response;
-    }
+    
 
     can update_que{
-        for item in visitor.extracted_entities{
-            if (item in que.dict::keys){
-                for ent in visitor.extracted_entities[item] {
-                    if (ent not in que[item]){
-                        que[item].list::append(visitor.extracted_entities[item][0]);
+        // for item in visitor.extracted_entities{
+        //     if (item in que.dict::keys){
+        //         for ent in visitor.extracted_entities[item] {
+        //             if (ent not in que[item]){
+        //                 que[item].list::append(visitor.extracted_entities[item][0]);
+        //             }
+        //         }
+        //     }
+        //     else{
+        //         que[item]= visitor.extracted_entities[item];
+        //     }
+        // }
+
+        // if(visitor.extracted_entities and !visitor.respond){
+        //     here.extracted_sentences.list::append(visitor.question);
+        // }
+
+
+        zs_event="";
+        zs_sentiments = {};
+        zs_sentiment = "";
+        zs_result =  zs_classifier.classify(text=visitor.question, classes=["vacation","birthday","anniversary","funeral","sport"]);
+
+        if(visitor.question in zs_result[0]){
+            for event in zs_result[0][visitor.question]{
+                if event['value'] in event_type{
+                    for que in event_type[event['value']]{
+                        if (que not in required_que){
+                            required_que.list::append(que);
+                        }
                     }
                 }
             }
-            else{
-                que[item]= visitor.extracted_entities[item];
+        }
+
+
+        
+
+        if(visitor.extracted_entities and !visitor.predicted_intent){
+            here.extracted_sentences.list::append(visitor.question);
+            if(first_response){
+                visitor.dialogue_context["extracted_sentences"]=[visitor.question];
+                first_response = false;
+            }
+            elif(visitor.question not in visitor.dialogue_context["extracted_sentences"]){
+                visitor.dialogue_context["extracted_sentences"].list::append(visitor.question);
+            }
+            // std.out("store sentence");
+        }
+
+        for item in visitor.dialogue_context{
+            if ( item in response_entity['response'].dict::keys ){  
+            // if ( item in response_entity['response'].dict::keys and item in visitor.dialogue_context.dict::keys){  
+                if (item not in ent_list and item in required_que){ 
+                // if (item not in ent_list){ 
+                    ent_list.list::append(item);
+                    if(item not in removed_que){
+                        // std.out("item was added in update");
+                        removed_que.list::append(item);
+                    }
+                }
             }
         }
 
-        for item in que{
-            if ( item in response_entity['response'].dict::keys and item in visitor.dialogue_context.dict::keys){  
-                if (item not in ent_list): ent_list.list::append(item);
-            }
-        }
+
+        // if('event' in visitor.dialogue_context){
+        //     for event in event_type{
+        //         if (event in visitor.dialogue_context['event']){
+        //             for que in event_type[event]{
+        //                 if (que not in tll){
+        //                     tll.list::append(que);
+        //                 }
+        //                 // ent_list.list::append(que);
+        //             }
+        //         }
+        //     }
+        // }
+        // std.out("tllmmmmmmm");
+        // std.out(tll);
     }
 
     can nlu with talk entry{
         ::classify_intent;
         ::extract_entities;
         ::business_logic;
-        ::update_que;
-
         
+        
+
+        ::update_que;
 
         if(!visitor.respond){ 
             answer_list.list::append(visitor.question);
             // std.out(que);
-            std.out(ent_list);
+            
         }
 
         max_score = 0.01;
         entity_response = "";
         rr = "";
         remove_item = "";
+        removed_que_entity="";
+
+        
+
+
 
 
         for entity in response_entity['response'].dict::keys{
-            if (entity not in ent_list){
+            // std.out("Tesssss");
+            // std.out(ent_list);
+            // std.out(unanswer_que);
+            // if (entity in ent_list): std.out(entity);
+            if (entity in ent_list and entity in unanswer_que): unanswer_que.list::remove(entity);
+            if (entity not in removed_que and entity in required_que){
+                // std.out('if entity ran');
+                // if (entity not in ent_list){
+                // std.out(entity);
+                if (entity not in unanswer_que): unanswer_que.list::append(entity);
                 for ent in response_entity['response'][entity].dict::keys{
                     if (ent in ent_list){
                         ii = 0;
@@ -658,6 +794,7 @@ node events:dialogue_state{
                             if (best_answer['scores'][nn] > max_score){
                                 max_score = best_answer['scores'][nn];
                                 entity_response = response_entity['response'][entity][ent];
+                                removed_que_entity = entity;
                             }
 
                             leng = answer_list.length - 1;
@@ -672,24 +809,115 @@ node events:dialogue_state{
 
                     }
                 }
+                
             }
+            elif( entity in required_que and entity in removed_que and entity not in ent_list and entity in visitor.extracted_entities ){
+            // elif(entity in removed_que and entity not in ent_list and entity in visitor.extracted_entities ){
+                // elif(entity in removed_que and entity in visitor.extracted_entities and entity not in visitor.dialogue_context ){
+                // std.out('elif entity ran');
+                for ent in response_entity['response'][entity].dict::keys{
+                    if (ent in ent_list){
+                        ii = 0;
+                        while (max_score < 0.1){
+                            
+                            best_answer = use.qa_classify(
+                                text = answer_list[ii],
+                                classes = response_entity['response'][entity][ent]
+                            );
+                            nn = best_answer['match_idx'];
+
+                            
+                            if (best_answer['scores'][nn] > max_score){
+                                max_score = best_answer['scores'][nn];
+                                entity_response = response_entity['response'][entity][ent];
+                                removed_que_entity = entity;
+                            }
+
+                            leng = answer_list.length - 1;
+                            if (max_score < 0.1){
+                                ii +=1;
+                                if(ii >= leng){
+                                    break;
+                                }
+                            }
+                        }
+                        rr = rand.choice(entity_response);
+
+
+                    }
+                }
+                
+            }
+            // elif(rr == ""){ 
+            //     std.out('else entity ran');
+            //     visitor.respond = true;
+            // }
+        }
+
+        // std.out("Not answered Que");
+        // std.out(tess);
+        // if (!visitor.respond and rr ==""){
+        //     std.out("if response true");
+        //     visitor.respond = true;
+        // }
+        if(!visitor.respond and removed_que_entity != ""){
+            // std.out("item was added in update 2");
+            removed_que.list::append(removed_que_entity);
+            // std.out(removed_que);
         }
 
 
         create_response = flow.gen_response(rr.str, visitor.dialogue_context.dict);
         visitor.response = create_response;
-        ::summarize;
+        
+        // std.out("visitor.dialogue_context['extracted_sentences']");
+        // std.out(visitor.dialogue_context['extracted_sentences']);
 
-        if (visitor.response): visitor.next_state = here;
+        if (!visitor.respond){
+            std.out("Required Que ");
+            std.out(required_que);
+            std.out("Unanswered Que");
+            std.out(unanswer_que);
+            std.out("Answered Que");
+            std.out(ent_list);
+            std.out("Removed Que");
+            std.out(removed_que);
+        }
+            
+
+
+
+        if (visitor.response) {
+            visitor.next_state = here;
+            
+        }
+        elif!(visitor.response){
+            std.out("Required Que ");
+            std.out(required_que);
+            std.out("Unanswered Que");
+            std.out(unanswer_que);
+            std.out("Answered Que");
+            std.out(ent_list);
+            std.out("Removed Que");
+            std.out(removed_que);
+            // std.out("NOTE:: no response\n\n");
+            visitor.respond = true;
+            // std.out("visitor.next_state");
+            // std.out(visitor.next_state);
+            visitor.next_state = null;
+            
+            std.out(visitor.dialogue_context['extracted_sentences']);
+
+        }
         else: {
             // visitor.next_state
-            std.out("NOTE:: no response\n\n");
-            std.out("visitor.next_state");
-            std.out(visitor.next_state);
+            // std.out("NOTE:: Else event ran\n\n");
             // std.out(visitor.respond);
             // visitor.next_state = null;
+            
         }
     }
+
 }
 
 

@@ -24,8 +24,15 @@
     "resource": ""
   },
   {
-    "name": "save_memory",
+    "name": "confirm_save_memory",
     "responses": ["Your memory was saved"],
+    "extracted_item": {},
+    "variable": [],
+    "resource": ""
+  },
+  {
+    "name": "save_memory",
+    "responses": ["Would you like to save this memory?"],
     "extracted_item": {},
     "variable": [],
     "resource": ""

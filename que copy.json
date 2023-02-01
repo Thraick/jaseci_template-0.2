@@ -2,8 +2,7 @@
     "response": {
         "location":{
             "default":["Where did this event took place?"],
-            "subject":["Where did you celebrate {{subject}}'s birthday?"],
-            "event":["where was the {{event}}?"]
+            "subject":["Where did you celebrate {{subject}}'s birthday?"]
         },
         "age":{
             "default":["How old are you?"],
@@ -21,8 +20,7 @@
         "emotion":{
             "default":["How did you feel?"],
             "subject":["How did you feel at {{subject}}'s birthday?"],
-            "activity":["how did you feel {{activity}}?"],
-            "event":["How did you feel at the {{event}}"]
+            "activity":["how did you feel {{activity}}?"]
         },
         "subject":{
             "default":[],
@@ -30,11 +28,6 @@
         },
         "event":{
             "default":["What event would you like to document?"]
-        },
-        "date":{
-            "subject":["When was {{subject}}'s birthday?"],
-            "event":["When did this {{event}} happened?"]
         }
     }
 }
-
