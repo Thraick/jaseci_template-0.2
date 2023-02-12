@@ -5,6 +5,7 @@ actions load module jaseci_ai_kit.use_enc
 actions load module jaseci_ai_kit.t5_sum
 actions load module jaseci_ai_kit.zs_classifier
 actions load module jaseci_ai_kit.cl_summer
+actions load local tobu.py
 
 actions load local utils/model/local/flow.py
 actions load local utils/model/local/twilio_bot.py
@@ -104,3 +105,11 @@ dot -Tpng .main.dot -o .main.png
 walker run talk -ctx "{\"question\": \"i went too a birthday party\"}"
 
 walker run talk -ctx "{\"question\": \"later\"}"
+
+
+
+TODO 
+
+- emotions to response
+- rebuild
+- 

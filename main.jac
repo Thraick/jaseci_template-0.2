@@ -6,6 +6,11 @@ import {*} with './utils/model/kit/bi_enc.jac';
 import {*} with './utils/model/kit/tfm_ner.jac';
 // import {*} with './utils/model/kit/zs_classifier.jac';
 
+//tubo
+import {*} with "./tubo folder/document_memory.jac";
+import {*} with "./tubo folder/memory.jac";
+import {*} with "./tubo folder/summary.jac";
+
 
 walker init {
     root{

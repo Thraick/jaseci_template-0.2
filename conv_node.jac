@@ -644,7 +644,7 @@ node events:dialogue_state{
     has answer_list = [];
     has que = {};
     has ent_list = [];
-    has required_que = [];
+    has required_que = [];  // fix this :: main_que, answered_que, unanswered_que // add enitiy at index 0 => main_que
     has response_entity = file.load_json("que.json");
     has event_type = file.load_json("utils/data/summary/events.json");
     has extracted_sentences = [];
@@ -906,7 +906,7 @@ node events:dialogue_state{
             // std.out(visitor.next_state);
             visitor.next_state = null;
             
-            std.out(visitor.dialogue_context['extracted_sentences']);
+            // std.out(visitor.dialogue_context['extracted_sentences']);
 
         }
         else: {

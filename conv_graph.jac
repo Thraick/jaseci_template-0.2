@@ -18,7 +18,8 @@ graph dialogue_system {
         additional_memory = spawn node::response_only_template(name="additional_memory");
         
         save_memory = spawn node::response_only_template(name="save_memory");
-        confirm_save_memory = spawn node::summary_template(imprint = [{"list_imprint":bienc['confirm_save_memory'], "name": "confirm_save_memory"}], name="confirm_save_memory");
+        // confirm_save_memory = spawn node::summary_template(imprint = [{"list_imprint":bienc['confirm_save_memory'], "name": "confirm_save_memory"}], name="confirm_save_memory");
+        confirm_save_memory = spawn node::document_memory_confirmed(imprint = [{"list_imprint":bienc['confirm_save_memory'], "name": "confirm_save_memory"}], name="confirm_save_memory");
         
         cancel_memory = spawn node::response_only_template(imprint = [{"list_imprint":bienc['cancel_memory'], "name": "cancel_memory"}], name="cancel_memory");
         confirm_cancel_memory = spawn node::response_only_template(imprint = [{"list_imprint":bienc['confirm_cancel_memory'], "name": "confirm_cancel_memory"}], name="confirm_cancel_memory");
@@ -39,6 +40,7 @@ graph dialogue_system {
         additional_memory +[redirect_confirm_transition]+>save_memory;
 
         save_memory +[intent_transition(intent="faqs")]+>faqs;
+        // save_memory +[intent_transition(intent="confirm_save_memory")]+>confirm_save_memory;
         save_memory +[intent_transition(intent="confirm_save_memory")]+>confirm_save_memory;
         save_memory +[intent_transition(intent="cancel_memory")]+>cancel_memory;
 

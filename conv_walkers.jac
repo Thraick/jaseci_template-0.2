@@ -119,6 +119,22 @@ walker talk {
     has respond = true;
     has threshold = false;
 
+    // has wlk_ctx = {
+    //     "intent": null,
+    //     'user_context': '',
+    //     "summary": '',
+    //     "trigger_emotion": true,
+    //     "trigger_confirmed": false,
+    //     "entities": {},
+    //     "temporary_data": {},
+    //     "last_entity": null,
+    //     "starting": true,
+    //     "prev_state": null,
+    //     "next_state": null,
+    //     "respond": false,
+    //     "skip_this": false
+    // };
+
     root: take -[user]-> node::user;
     user {
         if(cont_state == ""): std.out('WALKER TALKER ERROR: cont_state is an EMPTY STR');

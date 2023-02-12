@@ -49,3 +49,40 @@ global sentiments = {
 //     "sport": ["emotion", "people", "date", "location", "outcome"],
 //     "accident": ["emotion", "people", "date", "location"]
 // }
+
+/// tubo 
+
+
+// global candidate_types = ['birthday', 'wedding', 'sport', 'trip', 'anniversary', 'engagement', 'retirement', 'graduation', 'date'];
+global candidate_types = ['wedding', 'sport'];
+
+global emotion = ["sad", "happy", "fear", "anger", "surprised"];
+
+global sentiment_descriptors = {
+    "sad": ["sorrowful", "unfortunate", "sad", "unhappy"],
+    "happy": ["pleasant", "lovely", "great", "beautiful"],
+    "fear": ["thrilling", "frightening", "unsettling", "disturbing"],
+    "anger": ["angry", "frustrating", "hair-pulling", "annoying"],
+    "surprised": ["surprising", "insane", "shocking", "jolting"]
+};
+
+global Relatedmemories = [];
+
+global sentiments = {
+    "sad": ["I'm sorry to hear that.", "Oh dear, that's so sad!", "I'm terribly sorry to hear that."],
+    "happy": ["Awesome!", "I'm so happy for you!", "That's wonderful!", "How nice.."],
+    "fear": ["That's scary!", "That's terrifying!"],
+    "anger": ["I'm sorry that you're mad, it'll be ok..'", "Try to stay calm, ok?", "I'm sorry that you are angry!"],
+    "surprised": ["Wow, that's surprising!", "Amazing!, I know you are surprised indeed!"]
+};
+
+global capture_memory_prompts = [
+    "Tell me all about this memory you'd like me to capture",
+    "If you're sharing, I'm listening..",
+    "Tell me about this moment you'd like to capture ...",
+    "A new memory? Tell me all about it...",
+    "Tell me about your memory, things like where and when it happened and how you were feeling, then."
+];
+
+global affirmative_and_negative_path = "data/affirmative_and_negative.json";
+global affirmative_negative_threshold = 0.5;
